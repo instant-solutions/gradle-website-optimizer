@@ -1,4 +1,4 @@
-package at.tripwire.gradle.wo;
+package at.tripwire.gradle.wo.tags;
 
 import java.io.File;
 import java.util.ArrayList;

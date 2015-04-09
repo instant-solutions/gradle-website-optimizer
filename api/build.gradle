@@ -1,3 +1,5 @@
 dependencies {
     compile 'commons-io:commons-io:2.4'
+    compile 'com.google.javascript:closure-compiler:v20150315'
+    compile 'com.yahoo.platform.yui:yuicompressor:2.4.8'
 }

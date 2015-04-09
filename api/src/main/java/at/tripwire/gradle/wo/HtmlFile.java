@@ -1,5 +1,8 @@
 package at.tripwire.gradle.wo;
 
+import at.tripwire.gradle.wo.tags.OptimizeTag;
+import at.tripwire.gradle.wo.tags.ReuseTag;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
