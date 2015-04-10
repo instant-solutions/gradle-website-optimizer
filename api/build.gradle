@@ -2,4 +2,8 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     compile 'com.google.javascript:closure-compiler:v20150315'
     compile 'com.yahoo.platform.yui:yuicompressor:2.4.8'
+    compile('com.googlecode.htmlcompressor:htmlcompressor:1.5.2') {
+        exclude group: 'com.google.javascript'
+        exclude group: 'com.yahoo.platform.yui'
+    }
 }
