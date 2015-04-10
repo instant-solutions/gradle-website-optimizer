@@ -1,6 +1,9 @@
 package at.tripwire.gradle.wo;
 
 import at.tripwire.gradle.wo.exceptions.ParseException;
+import at.tripwire.gradle.wo.tags.OptimizeTag;
+import at.tripwire.gradle.wo.tags.ReuseTag;
+import at.tripwire.gradle.wo.tags.TagPair;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -263,10 +266,5 @@ public class HtmlParser {
         public HtmlParser build() {
             return instance;
         }
-    }
-
-
-    public static void main(String[] args) throws ParseException {
-        new HtmlParser.Builder().add(new File("C:\\Users\\david.MKW-W\\Desktop\\website\\index.html")).build().parse();
     }
 }
