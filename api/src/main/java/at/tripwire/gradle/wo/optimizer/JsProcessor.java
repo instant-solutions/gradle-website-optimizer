@@ -15,8 +15,7 @@ public class JsProcessor implements Processor {
         compilerOptions.setCodingConvention(new ClosureCodingConvention());
         compilerOptions.setOutputCharset("UTF-8");
         compilerOptions.setWarningLevel(DiagnosticGroups.CHECK_VARIABLES, CheckLevel.WARNING);
-        compilerOptions.setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT5);
-        compilerOptions.setLanguageOut(CompilerOptions.LanguageMode.ECMASCRIPT5);
+        compilerOptions.setLanguage(CompilerOptions.LanguageMode.ECMASCRIPT5);
         CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(compilerOptions);
 
         Compiler compiler = new Compiler();

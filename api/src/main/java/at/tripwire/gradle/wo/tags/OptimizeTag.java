@@ -11,7 +11,7 @@ public class OptimizeTag {
 
     public OptimizeTag(TagPair tagPair) {
         this.srcTag = tagPair;
-        this.srcFiles = new ArrayList<File>();
+        this.srcFiles = new ArrayList<>();
     }
 
     public List<File> getSrcFiles() {
@@ -24,5 +24,14 @@ public class OptimizeTag {
 
     public TagPair getSrcTag() {
         return srcTag;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("OptimizeTag{");
+        sb.append("srcFiles=").append(srcFiles);
+        sb.append(", srcTag=").append(srcTag);
+        sb.append('}');
+        return sb.toString();
     }
 }

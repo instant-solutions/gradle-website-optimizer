@@ -56,4 +56,16 @@ public class TagPair {
     public void setContentIndexEnd(int contentIndexEnd) {
         this.contentIndexEnd = contentIndexEnd;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("TagPair{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", fileType=").append(fileType);
+        sb.append(", actionType=").append(actionType);
+        sb.append(", contentIndexStart=").append(contentIndexStart);
+        sb.append(", contentIndexEnd=").append(contentIndexEnd);
+        sb.append('}');
+        return sb.toString();
+    }
 }

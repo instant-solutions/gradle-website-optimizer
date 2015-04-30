@@ -1,4 +1,17 @@
+configurations {
+    releaseJars
+}
+
 dependencies {
     compile gradleApi()
     compile project(':api')
+    releaseJars project(':api')
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Website Optimizer'
+    }
+
+    from configurations.releaseJars.collect { it.isDirectory() ? it : zipTree(it) }
 }
