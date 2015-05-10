@@ -23,9 +23,6 @@ public class WebsiteOptimizerPlugin implements Plugin<Project> {
         project.afterEvaluate(new Action<Project>() {
             @Override
             public void execute(Project project) {
-                File jsDestFolder = getJsDestination(projectContainer);
-                File cssDestFolder = getCssDestination(projectContainer);
-
                 HtmlParser.Builder parserBuilder = new HtmlParser.Builder();
 
                 for (File file : projectContainer.getSrcFiles()) {
@@ -37,44 +34,34 @@ public class WebsiteOptimizerPlugin implements Plugin<Project> {
 
                     for (HtmlFile htmlFile : htmlFiles) {
                         for (OptimizeTag optimizeTag : htmlFile.getOptimizeTags()) {
-                            addOptimizeTask(project, optimizeTag, jsDestFolder, cssDestFolder);
+                            addOptimizeTask(project, optimizeTag);
                         }
 
-
+                        // TODO: create HtmlTask and add optimize tasks as dependency
                     }
 
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    e.printStackTrace(); // TODO: implement
                 }
             }
         });
     }
 
-    private File getJsDestination(WebsiteProject projectContainer) {
-        return projectContainer.getJsDest() != null ? projectContainer.getJsDest() : new File(".");
-    }
-
-    private File getCssDestination(WebsiteProject projectContainer) {
-        return projectContainer.getCssDest() != null ? projectContainer.getCssDest() : new File(".");
-    }
-
-    private void addOptimizeTask(Project project, OptimizeTag tag, File jsDestFolder, File cssDestFolder) {
+    private void addOptimizeTask(Project project, OptimizeTag tag) {
         BaseOptimizeTask baseOptimizeTask = null;
         String name;
         String tagName = tag.getSrcTag().getName();
 
-        File destFile = null;
+        File destFile = Utils.getDestinationFile(project, tag.getSrcTag());
 
         switch (tag.getSrcTag().getFileType()) {
             case JS:
                 name = "optimizeJs-" + tagName;
                 baseOptimizeTask = project.getTasks().create(name, OptimizeJsTask.class);
-                destFile = new File(jsDestFolder, tagName + ".min.js");
                 break;
             case CSS:
-                name = "optimizeCss-" + tag.getSrcTag().getName();
+                name = "optimizeCss-" + tagName;
                 baseOptimizeTask = project.getTasks().create(name, OptimizeCssTask.class);
-                destFile = new File(cssDestFolder, tagName + ".min.css");
                 break;
         }
 

@@ -8,8 +8,6 @@ import java.util.Collection;
 
 public class WebsiteProject {
 
-    private File cssDest;
-    private File jsDest;
     private Collection<File> srcFiles;
 
     public WebsiteProject() {
@@ -22,14 +20,6 @@ public class WebsiteProject {
 
     public void html(FileCollection fileCollection) {
         srcFiles.addAll(fileCollection.getFiles());
-    }
-
-    public File getCssDest() {
-        return cssDest;
-    }
-
-    public File getJsDest() {
-        return jsDest;
     }
 
     public Collection<File> getSrcFiles() {
