@@ -9,6 +9,7 @@ import java.util.Collection;
 public class WebsiteProject {
 
     private Collection<File> srcFiles;
+    private boolean minifyHtml = true;
 
     public WebsiteProject() {
         this.srcFiles = new ArrayList<>();
@@ -22,7 +23,15 @@ public class WebsiteProject {
         srcFiles.addAll(fileCollection.getFiles());
     }
 
+    public void minifyHtml(boolean minifyHtml) {
+        this.minifyHtml = minifyHtml;
+    }
+
     public Collection<File> getSrcFiles() {
         return srcFiles;
+    }
+
+    public boolean isMinifyHtml() {
+        return minifyHtml;
     }
 }

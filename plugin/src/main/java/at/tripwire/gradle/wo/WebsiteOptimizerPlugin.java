@@ -4,10 +4,10 @@ import at.tripwire.gradle.wo.exceptions.ParseException;
 import at.tripwire.gradle.wo.tags.OptimizeTag;
 import at.tripwire.gradle.wo.tasks.BaseOptimizeTask;
 import at.tripwire.gradle.wo.tasks.OptimizeCssTask;
+import at.tripwire.gradle.wo.tasks.OptimizeHtmlTask;
 import at.tripwire.gradle.wo.tasks.OptimizeJsTask;
-import org.gradle.api.Action;
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
+import com.google.common.base.CaseFormat;
+import org.gradle.api.*;
 
 import java.io.File;
 import java.util.List;
@@ -32,40 +32,54 @@ public class WebsiteOptimizerPlugin implements Plugin<Project> {
                 try {
                     List<HtmlFile> htmlFiles = parserBuilder.build().parse();
 
-                    for (HtmlFile htmlFile : htmlFiles) {
-                        for (OptimizeTag optimizeTag : htmlFile.getOptimizeTags()) {
-                            addOptimizeTask(project, optimizeTag);
-                        }
+                    Task optimizeWebsiteTask = project.getTasks().create("optimizeWebsite");
 
-                        // TODO: create HtmlTask and add optimize tasks as dependency
+                    for (HtmlFile htmlFile : htmlFiles) {
+                        OptimizeHtmlTask htmlTask = addHtmlTask(project, htmlFile, optimizeWebsiteTask, projectContainer);
+
+                        for (OptimizeTag optimizeTag : htmlFile.getOptimizeTags()) {
+                            addOptimizeTask(project, optimizeTag, htmlTask);
+                        }
                     }
 
                 } catch (ParseException e) {
-                    e.printStackTrace(); // TODO: implement
+                    throw new GradleScriptException("Failed to parse HTML file!", e);
                 }
             }
         });
     }
 
-    private void addOptimizeTask(Project project, OptimizeTag tag) {
+    private OptimizeHtmlTask addHtmlTask(Project project, HtmlFile htmlFile, Task optimizeWebsiteTask, WebsiteProject container) {
+        OptimizeHtmlTask task = project.getTasks().create("optimizeHtml-" + htmlFile.getSrcFile().getName(), OptimizeHtmlTask.class);
+        optimizeWebsiteTask.dependsOn(task);
+        task.setSrcFile(htmlFile);
+        task.setDestFile(Utils.getDestinationFile(project, htmlFile));
+        task.setMinifyHtml(container.isMinifyHtml());
+
+        return task;
+    }
+
+    private void addOptimizeTask(Project project, OptimizeTag tag, Task htmlTask) {
         BaseOptimizeTask baseOptimizeTask = null;
         String name;
         String tagName = tag.getSrcTag().getName();
+        tagName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, tagName);
 
         File destFile = Utils.getDestinationFile(project, tag.getSrcTag());
 
         switch (tag.getSrcTag().getFileType()) {
             case JS:
-                name = "optimizeJs-" + tagName;
+                name = "optimizeJs" + tagName;
                 baseOptimizeTask = project.getTasks().create(name, OptimizeJsTask.class);
                 break;
             case CSS:
-                name = "optimizeCss-" + tagName;
+                name = "optimizeCss" + tagName;
                 baseOptimizeTask = project.getTasks().create(name, OptimizeCssTask.class);
                 break;
         }
 
         baseOptimizeTask.setSrcFiles(tag.getSrcFiles());
         baseOptimizeTask.setDestFile(destFile);
+        htmlTask.dependsOn(baseOptimizeTask);
     }
 }

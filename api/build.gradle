@@ -7,3 +7,25 @@ dependencies {
         exclude group: 'com.yahoo.platform.yui'
     }
 }
+
+publishing {
+    publications {
+        api(MavenPublication) {
+            groupId 'at.tripwire.gradle.wo'
+            artifactId 'optimizer-api'
+            version "${currentVersion}"
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            // place credentials in USER-HOME/.gradle/gradle.properties
+            credentials {
+                username nexusUser
+                password nexusPassword
+            }
+            url "http://srv4.tripwire.at:9001/content/repositories/${currentVersion.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'}/"
+        }
+    }
+}

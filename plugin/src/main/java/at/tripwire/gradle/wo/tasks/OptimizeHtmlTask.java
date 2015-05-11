@@ -22,6 +22,7 @@ public class OptimizeHtmlTask extends DefaultTask {
 
     private File destFile;
     private HtmlFile srcFile;
+    private boolean minifyHtml;
 
     @TaskAction
     public void optimize() {
@@ -45,7 +46,7 @@ public class OptimizeHtmlTask extends DefaultTask {
         }
 
         HtmlProcessor processor = new HtmlProcessor();
-        String result = processor.process(content);
+        String result = minifyHtml ? processor.process(content) : content;
 
         try (FileOutputStream fileOut = new FileOutputStream(destFile)) {
             IOUtils.write(result, new BufferedOutputStream(fileOut));
@@ -86,5 +87,9 @@ public class OptimizeHtmlTask extends DefaultTask {
 
     public void setDestFile(File destFile) {
         this.destFile = destFile;
+    }
+
+    public void setMinifyHtml(boolean minifyHtml) {
+        this.minifyHtml = minifyHtml;
     }
 }

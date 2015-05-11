@@ -25,6 +25,10 @@ public class Utils {
         return new File(dir, tag.getName() + fileSuffix);
     }
 
+    public static File getDestinationFile(Project project, HtmlFile htmlFile) {
+        return new File(getOutputDir(project), htmlFile.getSrcFile().getName());
+    }
+
     private static File getJsOutputDir(Project project) {
         return new File(getOutputDir(project), "js");
     }
