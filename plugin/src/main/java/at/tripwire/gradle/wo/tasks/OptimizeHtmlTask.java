@@ -3,6 +3,7 @@ package at.tripwire.gradle.wo.tasks;
 import at.tripwire.gradle.wo.HtmlFile;
 import at.tripwire.gradle.wo.Utils;
 import at.tripwire.gradle.wo.optimizer.HtmlProcessor;
+import at.tripwire.gradle.wo.options.HtmlOptions;
 import at.tripwire.gradle.wo.tags.OptimizeTag;
 import at.tripwire.gradle.wo.tags.ReuseTag;
 import at.tripwire.gradle.wo.tags.TagPair;
@@ -22,7 +23,7 @@ public class OptimizeHtmlTask extends DefaultTask {
 
     private File destFile;
     private HtmlFile srcFile;
-    private boolean minifyHtml;
+    private HtmlOptions options;
 
     @TaskAction
     public void optimize() {
@@ -45,11 +46,14 @@ public class OptimizeHtmlTask extends DefaultTask {
             content = content.replace(replaceText, getHtmlInclude(pair));
         }
 
-        HtmlProcessor processor = new HtmlProcessor();
-        String result = minifyHtml ? processor.process(content) : content;
+        if (options.isMinifyHtml()) {
+            HtmlProcessor processor = new HtmlProcessor();
+            processor.setOptions(options);
+            content = options.isMinifyHtml() ? processor.process(content) : content;
+        }
 
         try (FileOutputStream fileOut = new FileOutputStream(destFile)) {
-            IOUtils.write(result, new BufferedOutputStream(fileOut));
+            IOUtils.write(content, new BufferedOutputStream(fileOut));
         } catch (IOException e) {
             throw new GradleScriptException("Failed to write processed HTML file!", e);
         }
@@ -65,15 +69,19 @@ public class OptimizeHtmlTask extends DefaultTask {
         StringBuilder builder = new StringBuilder();
 
         switch (pair.getFileType()) {
-            case CSS: // <link rel="stylesheet" href="stylesheet.css" type="text/css">
+            case CSS:
+                builder.append("\n");
                 builder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
                 builder.append(Utils.getRelativeDestinationPath(getProject(), pair));
                 builder.append("\" />");
+                builder.append("\n");
                 break;
             case JS:
+                builder.append("\n");
                 builder.append("<script type=\"text/javascript\" src=\"");
                 builder.append(Utils.getRelativeDestinationPath(getProject(), pair));
                 builder.append("\"></script>");
+                builder.append("\n");
                 break;
         }
 
@@ -89,7 +97,7 @@ public class OptimizeHtmlTask extends DefaultTask {
         this.destFile = destFile;
     }
 
-    public void setMinifyHtml(boolean minifyHtml) {
-        this.minifyHtml = minifyHtml;
+    public void setOptions(HtmlOptions options) {
+        this.options = options;
     }
 }

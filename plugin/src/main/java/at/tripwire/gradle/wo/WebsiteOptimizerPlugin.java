@@ -54,7 +54,7 @@ public class WebsiteOptimizerPlugin implements Plugin<Project> {
         optimizeWebsiteTask.dependsOn(task);
         task.setSrcFile(htmlFile);
         task.setDestFile(Utils.getDestinationFile(project, htmlFile));
-        task.setMinifyHtml(container.isMinifyHtml());
+        task.setOptions(container.getHtmlOptions());
 
         return task;
     }
