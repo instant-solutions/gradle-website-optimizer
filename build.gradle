@@ -1,6 +1,7 @@
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'maven-publish'
+    apply plugin: 'maven'
+    apply plugin: 'signing'
 
     repositories {
         mavenCentral()
@@ -8,6 +9,73 @@ subprojects {
 
     ext {
         currentVersion = "0.1-SNAPSHOT"
+    }
+
+    signing {
+        sign configurations.archives
+    }
+
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
+    }
+
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    artifacts {
+        archives javadocJar, sourcesJar
+    }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                pom.project {
+                    name 'Gradle Website Optimizer'
+                    packaging 'jar'
+                    description 'A gradle plugin to easily optimize HTML websites and contained CSS and JS files.'
+                    url 'https://github.com/instant-solutions/gradle-website-optimizer'
+
+                    scm {
+                        connection 'scm:git:git@github.com:instant-solutions/gradle-website-optimizer.git'
+                        developerConnection 'scm:git:git@github.com:instant-solutions/gradle-website-optimizer.git'
+                        url 'https://github.com/instant-solutions/gradle-website-optimizer'
+                    }
+
+                    licenses {
+                        license {
+                            name 'The Apache License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'andlinger'
+                            name 'David Andlinger'
+                            email 'david.andlinger@instant-it.at'
+                        }
+                        developer {
+                            id 'holzleitner'
+                            name 'Max Holzleitner'
+                            email 'max.holzleitner@instant-it.at'
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

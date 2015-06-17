@@ -3,30 +3,12 @@ dependencies {
     compile project(':api')
 }
 
+group = "at.tripwire.gradle.wo"
+archivesBaseName = "website-optimizer"
+version = "${currentVersion}"
+
 jar {
     manifest {
-        attributes 'Implementation-Title': 'Website Optimizer'
-    }
-}
-
-publishing {
-    publications {
-        plugin(MavenPublication) {
-            groupId 'at.tripwire.gradle.wo'
-            artifactId 'optimizer'
-            version "${currentVersion}"
-            from components.java
-        }
-    }
-
-    repositories {
-        maven {
-            // place credentials in USER-HOME/.gradle/gradle.properties
-            credentials {
-                username nexusUser
-                password nexusPassword
-            }
-            url "http://srv4.tripwire.at:9001/content/repositories/${currentVersion.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'}/"
-        }
+        attributes 'Implementation-Title': 'Gradle Website Optimizer'
     }
 }
