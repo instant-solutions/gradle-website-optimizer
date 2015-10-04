@@ -8,7 +8,7 @@ subprojects {
     }
 
     ext {
-        currentVersion = "0.1-SNAPSHOT"
+        currentVersion = "0.1"
     }
 
     signing {
@@ -81,5 +81,5 @@ subprojects {
 
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.4'
+    gradleVersion = '2.7'
 }
