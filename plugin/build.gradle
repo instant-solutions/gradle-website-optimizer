@@ -1,3 +1,16 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.gradle.publish:plugin-publish-plugin:0.9.1"
+    }
+}
+
+apply plugin: "com.gradle.plugin-publish"
+
 dependencies {
     compile gradleApi()
     compile project(':api')
@@ -10,5 +23,19 @@ version = "${currentVersion}"
 jar {
     manifest {
         attributes 'Implementation-Title': 'Gradle Website Optimizer'
+    }
+}
+
+pluginBundle {
+    website = 'http://instant-it.at'
+    vcsUrl = 'https://github.com/instant-solutions/gradle-website-optimizer'
+    description = 'A gradle plugin to easily optimize HTML websites and contained CSS and JS files.'
+    tags = ['website', 'optimizer', 'html', 'javascript', 'css']
+
+    plugins {
+        woPlugin {
+            id = 'at.tripwire.website-optimizer'
+            displayName = 'Gradle Website Optimizer'
+        }
     }
 }
