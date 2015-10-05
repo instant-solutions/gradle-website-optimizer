@@ -7,7 +7,6 @@ A gradle plugin to easily optimize HTML websites and contained CSS and JS files.
 ### Maven Central
 
 ```
-
 buildscript {
     repositories {
         mavenCentral()
@@ -18,7 +17,6 @@ buildscript {
 }
 
 apply-plugin: "at.tripwire.website-optimizer"
-
 ```
 
 ### Gradle Plugin
@@ -27,5 +25,4 @@ apply-plugin: "at.tripwire.website-optimizer"
 plugins {
 	id "at.tripwire.website-optimizer" version "VERSION"
 }
-
 ```
