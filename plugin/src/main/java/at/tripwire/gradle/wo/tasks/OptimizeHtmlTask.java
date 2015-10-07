@@ -53,7 +53,11 @@ public class OptimizeHtmlTask extends DefaultTask {
         }
 
         try (FileOutputStream fileOut = new FileOutputStream(destFile)) {
-            IOUtils.write(content, new BufferedOutputStream(fileOut));
+            try (BufferedOutputStream out = new BufferedOutputStream(fileOut)) {
+                IOUtils.write(content, out);
+                out.flush();
+            }
+            fileOut.flush();
         } catch (IOException e) {
             throw new GradleScriptException("Failed to write processed HTML file!", e);
         }
