@@ -43,7 +43,15 @@ public class OptimizeHtmlTask extends DefaultTask {
 
         for (TagPair pair : replaceTexts.keySet()) {
             String replaceText = replaceTexts.get(pair);
-            content = content.replace(replaceText, getHtmlInclude(pair));
+            String generatedTag;
+
+            if(pair.getLocationType() == TagPair.LocationType.FILE) {
+                generatedTag = getHtmlIncludeTag(pair);
+            } else {
+                generatedTag = getFileContentTag(pair);
+            }
+
+            content = content.replace(replaceText, generatedTag);
         }
 
         if (options.isMinifyHtml()) {
@@ -53,7 +61,11 @@ public class OptimizeHtmlTask extends DefaultTask {
         }
 
         try (FileOutputStream fileOut = new FileOutputStream(destFile)) {
-            IOUtils.write(content, new BufferedOutputStream(fileOut));
+            try (BufferedOutputStream out = new BufferedOutputStream(fileOut)) {
+                IOUtils.write(content, out);
+                out.flush();
+            }
+            fileOut.flush();
         } catch (IOException e) {
             throw new GradleScriptException("Failed to write processed HTML file!", e);
         }
@@ -65,26 +77,58 @@ public class OptimizeHtmlTask extends DefaultTask {
         replaceTexts.put(tagPair, replaceText);
     }
 
-    private String getHtmlInclude(TagPair pair) {
+    private String getFileContentTag(TagPair pair) {
         StringBuilder builder = new StringBuilder();
+        builder.append("\n");
 
-        switch (pair.getFileType()) {
+        switch(pair.getFileType()) {
             case CSS:
-                builder.append("\n");
-                builder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
-                builder.append(Utils.getRelativeDestinationPath(getProject(), pair));
-                builder.append("\" />");
-                builder.append("\n");
+                builder.append("<style>");
+                builder.append(Utils.readMinifiedFile(getProject(), pair));
+                builder.append("</style>");
                 break;
             case JS:
-                builder.append("\n");
-                builder.append("<script type=\"text/javascript\" src=\"");
-                builder.append(Utils.getRelativeDestinationPath(getProject(), pair));
-                builder.append("\"></script>");
-                builder.append("\n");
+                builder.append("<script type=\"text/javascript\">");
+                builder.append(Utils.readMinifiedFile(getProject(), pair));
+                builder.append("</script>");
                 break;
         }
 
+        builder.append("\n");
+
+        return builder.toString();
+    }
+
+    private String getHtmlIncludeTag(TagPair pair) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("\n");
+
+        switch (pair.getFileType()) {
+            case CSS:
+                builder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+                builder.append(Utils.getRelativeDestinationPath(getProject(), pair));
+
+                if(options.isPreventCaching()) {
+                    builder.append("?");
+                    builder.append(System.currentTimeMillis());
+                }
+
+                builder.append("\" />");
+                break;
+            case JS:
+                builder.append("<script type=\"text/javascript\" src=\"");
+                builder.append(Utils.getRelativeDestinationPath(getProject(), pair));
+
+                if(options.isPreventCaching()) {
+                    builder.append("?");
+                    builder.append(System.currentTimeMillis());
+                }
+
+                builder.append("\"></script>");
+                break;
+        }
+
+        builder.append("\n");
 
         return builder.toString();
     }

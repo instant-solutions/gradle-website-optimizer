@@ -1,9 +1,14 @@
 package at.tripwire.gradle.wo;
 
 import at.tripwire.gradle.wo.tags.TagPair;
+import org.apache.commons.io.IOUtils;
+import org.gradle.api.GradleScriptException;
 import org.gradle.api.Project;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 public class Utils {
 
@@ -46,5 +51,17 @@ public class Utils {
         File rootFolder = getOutputDir(project);
 
         return rootFolder.toURI().relativize(destFile.toURI()).getPath();
+    }
+
+    public static String readMinifiedFile(Project project, TagPair tag) {
+        File file = getDestinationFile(project, tag);
+
+        try (FileInputStream fileIn = new FileInputStream(file)) {
+            try (BufferedInputStream in = new BufferedInputStream(fileIn)) {
+                return IOUtils.toString(in);
+            }
+        } catch (IOException e) {
+            throw new GradleScriptException("Unable to read minified file!", e);
+        }
     }
 }
