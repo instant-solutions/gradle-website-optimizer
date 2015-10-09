@@ -3,6 +3,7 @@ package at.tripwire.gradle.wo.options;
 public class HtmlOptions {
 
     private boolean minifyHtml = true;
+    private boolean preventCaching = true;
     private boolean removeComments = true;
     private boolean removeMutliSpaces = true;
     private boolean removeIntertagSpaces = false;
@@ -145,5 +146,13 @@ public class HtmlOptions {
 
     public void setPreserveLineBreaks(boolean preserveLineBreaks) {
         this.preserveLineBreaks = preserveLineBreaks;
+    }
+
+    public boolean isPreventCaching() {
+        return preventCaching;
+    }
+
+    public void setPreventCaching(boolean preventCaching) {
+        this.preventCaching = preventCaching;
     }
 }

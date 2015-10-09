@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 public class HtmlParser {
 
     private static final Logger logger = Logger.getLogger(HtmlParser.class.getName());
-    private static final String TAG_REGEX = "<!--\\s*(end|)\\s*(optimize|reuse)-(css|js)\\s*([a-zA-Z0-9]*?)\\s*-->";
+    private static final String TAG_REGEX = "<!--\\s*(end|)\\s*(optimize|reuse)-(css|js)\\s*([a-zA-Z0-9]*?)\\s*(|include)\\s*-->";
     private static final Pattern TAG_PATTERN = Pattern.compile(TAG_REGEX);
     private static final String CSS_REGEX = "<link.*href=\"(\\S*)\".*>";
     private static final Pattern CSS_PATTERN = Pattern.compile(CSS_REGEX);
@@ -107,6 +107,7 @@ public class HtmlParser {
             String actionTypeTag = matcher.group(2);
             String fileTypeTag = matcher.group(3);
             String nameTag = matcher.group(4);
+            String includeTag = matcher.group(5);
 
             Tag tag = new Tag();
 
@@ -130,6 +131,7 @@ public class HtmlParser {
             tag.open = !"end".equals(endTag);
             tag.indexBefore = matcher.start();
             tag.indexAfter = matcher.end();
+            tag.include = "include".equals(includeTag);
 
             foundTags.add(tag);
         }
@@ -151,6 +153,7 @@ public class HtmlParser {
             pair.setName(startTag.name);
             pair.setFileType(startTag.fileType);
             pair.setActionType(startTag.actionType);
+            pair.setLocationType(startTag.include ? TagPair.LocationType.INCLUDE : TagPair.LocationType.FILE);
             pair.setContentIndexStart(startTag.indexAfter);
             pair.setContentIndexEnd(endTag.indexBefore);
             pairs.add(pair);
@@ -235,16 +238,18 @@ public class HtmlParser {
         private String name;
         private int indexBefore;
         private int indexAfter;
+        private boolean include;
 
         @Override
         public String toString() {
-            final StringBuilder sb = new StringBuilder("Tag{");
+            final StringBuffer sb = new StringBuffer("Tag{");
             sb.append("fileType=").append(fileType);
             sb.append(", actionType=").append(actionType);
             sb.append(", open=").append(open);
             sb.append(", name='").append(name).append('\'');
             sb.append(", indexBefore=").append(indexBefore);
             sb.append(", indexAfter=").append(indexAfter);
+            sb.append(", include=").append(include);
             sb.append('}');
             return sb.toString();
         }

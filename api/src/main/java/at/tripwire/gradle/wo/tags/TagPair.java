@@ -10,9 +10,14 @@ public class TagPair {
         OPTIMIZE, REUSE
     }
 
+    public enum LocationType {
+        FILE, INCLUDE
+    }
+
     private String name;
     private FileType fileType;
     private ActionType actionType;
+    private LocationType locationType;
     private int contentIndexStart;
     private int contentIndexEnd;
 
@@ -41,6 +46,14 @@ public class TagPair {
         this.actionType = actionType;
     }
 
+    public LocationType getLocationType() {
+        return locationType;
+    }
+
+    public void setLocationType(LocationType locationType) {
+        this.locationType = locationType;
+    }
+
     public int getContentIndexStart() {
         return contentIndexStart;
     }
@@ -59,10 +72,11 @@ public class TagPair {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("TagPair{");
+        final StringBuffer sb = new StringBuffer("TagPair{");
         sb.append("name='").append(name).append('\'');
         sb.append(", fileType=").append(fileType);
         sb.append(", actionType=").append(actionType);
+        sb.append(", locationType=").append(locationType);
         sb.append(", contentIndexStart=").append(contentIndexStart);
         sb.append(", contentIndexEnd=").append(contentIndexEnd);
         sb.append('}');

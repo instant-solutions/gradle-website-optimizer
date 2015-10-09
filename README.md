@@ -3,7 +3,7 @@ A gradle plugin to easily optimize HTML websites and contained CSS and JS files.
 
 ## Version
 
-Current Version: `0.1`
+Current Version: `0.2`
 
 ## Dependency
 
