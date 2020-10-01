@@ -1,4 +1,4 @@
-# Gradle Website Optimizer
+# Gradle Website Optimizer---An amazing project
 A gradle plugin to easily optimize HTML websites and contained CSS and JS files.
 
 ## Version
